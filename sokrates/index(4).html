@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sokrates – gra dydaktyczna</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#172033;--muted:#64748b;--line:#d9e2ef;--accent:#3157d5;--accent2:#eef2ff;--ok:#0f8f58;--bad:#c03535}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#eef2ff,#f8fafc);color:var(--ink)}
+.wrap{max-width:900px;margin:0 auto;padding:28px 18px 48px}
+.hero{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+.badge{width:62px;height:62px;border-radius:18px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:30px;font-weight:700}
+h1{font-size:clamp(28px,5vw,46px);line-height:1.05;margin:0}
+.sub{color:var(--muted);margin:.45rem 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 12px 28px rgba(22,32,51,.08)}
+.progress{height:9px;background:#edf0f5;border-radius:999px;overflow:hidden;margin-bottom:18px}
+.progress>div{height:100%;background:var(--accent);width:0;transition:width .25s}
+.meta{display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:14px;margin-bottom:8px}
+.q{font-size:22px;font-weight:700;line-height:1.35;margin:12px 0 18px}
+.hint{font-size:14px;color:var(--muted);margin-bottom:12px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1px solid var(--line);border-radius:14px;cursor:pointer;background:#fff}
+.opt:hover{background:#f8fafc}
+.opt input{margin-top:3px;transform:scale(1.15)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;font-size:15px}
+.primary{background:var(--accent);color:#fff}
+.secondary{background:#eef2f7;color:var(--ink)}
+.feedback{margin-top:18px;padding:14px;border-radius:14px;display:none;line-height:1.5}
+.feedback.ok{display:block;background:#e8f7ef;color:#135c3c;border:1px solid #b7e2c9}
+.feedback.bad{display:block;background:#fff0f0;color:#7d2727;border:1px solid #efc1c1}
+.score{font-size:54px;font-weight:800;margin:8px 0}
+.foot{color:var(--muted);font-size:13px;margin-top:18px;text-align:center}
+@media(max-width:600px){.card{padding:18px}.q{font-size:19px}.badge{width:52px;height:52px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero"><div class="badge">Σ</div><div><h1>Sokrates</h1><p class="sub">Gra podsumowująca: etyka, intelektualizm, elenktyka, majeutyka, indukcja i definicja</p></div></div>
+  <main class="card" id="app"></main>
+  <div class="foot">Na podstawie: W. Tatarkiewicz, <em>Historia filozofii</em>, t. I, s. 79–86.</div>
+</div>
+<script>
+const questions = [{"type": "multi", "q": "Które stwierdzenia najlepiej opisują Sokratesa w ujęciu Tatarkiewicza?", "opts": ["Interesował się przede wszystkim etyką i człowiekiem.", "Dążył do powszechnych zasad poznania i działania.", "Podzielał relatywizm sofistów.", "Nie pozostawił własnych pism."], "ans": [0, 1, 3], "fb": "Tatarkiewicz podkreśla zwrot ku etyce, sprzeciw wobec relatywizmu oraz fakt, że naukę Sokratesa znamy z relacji uczniów."}, {"type": "single", "q": "Które zdanie najlepiej oddaje tezę „cnota jest wiedzą”?", "opts": ["Wystarczy znać definicje cnót na pamięć.", "Kto naprawdę wie, czym jest dobro, będzie czynił dobro.", "Cnota zależy od opinii większości.", "Wiedza i działanie moralne nie mają związku."], "ans": [1], "fb": "To sedno intelektualizmu etycznego: zło wynika z niewiedzy, a pełna wiedza dobra prowadzi do dobrego działania."}, {"type": "multi", "q": "Jakie konsekwencje Tatarkiewicz wyprowadza z intelektualizmu Sokratesa?", "opts": ["Cnoty można się uczyć.", "Cnota jest jedna, ponieważ wszystkie cnoty są wiedzą.", "Cnota jest zależna od zwyczaju.", "Wiedza etyczna ma charakter praktyczny."], "ans": [0, 1, 3], "fb": "Skoro cnota jest wiedzą, można jej nauczać; różne cnoty mają wspólny rdzeń wiedzy, a sama wiedza jest etyczna i praktyczna."}, {"type": "single", "q": "Rozmówca twierdzi: „Odwaga to brak strachu”. Sokrates pyta: „A jeśli ktoś nie boi się tylko dlatego, że nie rozumie zagrożenia?”. Co robi?", "opts": ["Stosuje elenktykę – testuje tezę i szuka sprzeczności.", "Przekazuje gotową definicję odwagi.", "Stosuje argument z autorytetu.", "Rezygnuje z poszukiwania definicji."], "ans": [0], "fb": "Pytanie podważa zbyt prostą definicję i oczyszcza rozmówcę z pozornej pewności – to funkcja elenktyczna."}, {"type": "multi", "q": "Które elementy należą do metody majeutycznej?", "opts": ["Pomoc w wydobyciu prawdy przez pytania.", "Dzielenie trudnych pytań na prostsze.", "Zmuszanie rozmówcy do bezmyślnego przyjęcia odpowiedzi.", "Wspólne poszukiwanie rozwiązania."], "ans": [0, 1, 3], "fb": "Majeutyka jest „sztuką położniczą”: nauczyciel pomaga rozmówcy samodzielnie dojść do trafniejszego rozumienia."}, {"type": "single", "q": "Co oznacza sokratejska „wiedza niewiedzy” w tekście?", "opts": ["Sceptycyzm: żadna wiedza nie jest możliwa.", "Świadomość granic własnej wiedzy i punkt wyjścia krytycznego badania.", "Przekonanie, że wszyscy wiedzą tyle samo.", "Odrzucenie rozumu na rzecz intuicji."], "ans": [1], "fb": "Tatarkiewicz interpretuje ją jako postawę krytyczną, nie sceptyczną: trzeba rozpoznać własną niewiedzę, aby sensownie szukać wiedzy."}, {"type": "multi", "q": "Które zdania trafnie opisują relację dobra, pożytku i szczęścia u Sokratesa?", "opts": ["Dobro jest dobre dlatego, że jest pożyteczne.", "To, co naprawdę dobre, jest zarazem naprawdę pożyteczne.", "Szczęście wiąże się z posiadaniem największego dobra, czyli cnoty.", "Pożytek ma wyłącznie materialny charakter."], "ans": [1, 2], "fb": "Tatarkiewicz wyraźnie zaznacza, że Sokrates nie uzależnia dobra od pożytku; raczej prawdziwy pożytek wypływa z dobra."}, {"type": "single", "q": "Jaki jest sens sokratejskiej indukcji?", "opts": ["Od pojęcia ogólnego przejść do jednego przykładu.", "Zebrać przypadki i wyszukać cechy wspólne, by dojść do pojęcia ogólnego.", "Udowodnić, że każda opinia jest równie dobra.", "Zastąpić definicje przykładami."], "ans": [1], "fb": "Sokrates zestawia konkretne przypadki, szuka tego, co wspólne, i na tej podstawie dąży do definicji."}, {"type": "multi", "q": "Które różnice między Sokratesem a sofistami podkreśla Tatarkiewicz?", "opts": ["Sofiści skłaniali się ku relatywizmowi, Sokrates szukał wiedzy powszechnej.", "Sofiści byli zainteresowani językiem, Sokrates w ogóle nie zajmował się definicjami.", "Dla Sokratesa korzyść z wiedzy miała być przede wszystkim duchowa i trwała.", "Sokrates podporządkował prawdę skuteczności."], "ans": [0, 2], "fb": "Obie strony interesowały się językiem i praktycznością wiedzy, ale różniły się rozumieniem prawdy i rodzaju korzyści."}, {"type": "single", "q": "Student mówi: „Wiem, że oszustwo jest złe, ale zrobiłem to świadomie”. Która odpowiedź najlepiej rekonstruuje stanowisko Sokratesa?", "opts": ["Skoro oszukał, jego wiedza dobra nie była pełna lub właściwa.", "To dowód, że cnota nie ma związku z wiedzą.", "Oszustwo jest dobre, jeśli było korzystne.", "Nie da się o tym nic powiedzieć."], "ans": [0], "fb": "W logice intelektualizmu etycznego złe działanie ujawnia brak pełnej wiedzy dobra."}, {"type": "multi", "q": "Które zadania pełni definicja w filozofii Sokratesa?", "opts": ["Ustala, czym dana cnota jest.", "Ma prowadzić do wiedzy ogólnej i powszechnej.", "Służy wyłącznie poprawności językowej.", "Łączy się z praktycznym celem etyki."], "ans": [0, 1, 3], "fb": "Definicja ma uchwycić istotę pojęcia ogólnego, a wiedza o cnocie ma służyć moralnemu życiu."}, {"type": "single", "q": "Które zdanie najlepiej oddaje ogólny sens „sokratyzmu” według Tatarkiewicza?", "opts": ["Skrajny relatywizm połączony z hedonizmem.", "Skrajny moralizm połączony ze skrajnym intelektualizmem.", "Naturalizm i materializm.", "Sceptycyzm wobec wszelkiej wiedzy."], "ans": [1], "fb": "Tatarkiewicz podsumowuje sokratyzm jako moralizm połączony z intelektualizmem: cnota jest celem, a wiedza środkiem."}, {"type": "multi", "q": "Które elementy mogą być uznane za problematyczne w stanowisku Sokratesa, gdy testujemy je współczesnymi przykładami?", "opts": ["Założenie, że pełna wiedza dobra wystarcza do dobrego działania.", "Silne powiązanie szczęścia z cnotą.", "Dążenie do precyzyjnych definicji.", "Przekonanie, że świadome zło wynika z niewiedzy."], "ans": [0, 1, 3], "fb": "To pytanie interpretacyjne. W kontekście zajęć za problematyczne można uznać zwłaszcza mocne twierdzenia o związku wiedzy, działania i szczęścia; samo dążenie do definicji nie jest tu sprzecznością."}, {"type": "multi", "q": "Które z poniższych działań nauczyciela są najbardziej „sokratejskie”?", "opts": ["Zadaje pytania ujawniające sprzeczność w odpowiedzi studenta.", "Podaje gotową definicję i każe ją zapamiętać.", "Prosi o przykłady i pomaga znaleźć ich cechę wspólną.", "Pomaga studentowi samodzielnie doprecyzować pojęcie."], "ans": [0, 2, 3], "fb": "To połączenie elenktyki, majeutyki oraz przechodzenia od przykładów do pojęcia ogólnego."}];
+let i=0, score=0, answered=false;
+
+function sameSet(a,b){return a.length===b.length && [...a].sort((x,y)=>x-y).every((v,k)=>v===[...b].sort((x,y)=>x-y)[k]);}
+
+function render(){
+  const app=document.getElementById('app');
+  if(i>=questions.length){
+    const pct=Math.round(score/questions.length*100);
+    let msg=pct>=85?'Bardzo dobre rozumienie tekstu.':pct>=65?'Dobra baza – warto wrócić do kilku rozróżnień.':'Wróć do trzech tez etycznych i metod Sokratesa.';
+    app.innerHTML=`<div class="meta"><span>Koniec gry</span><span>${questions.length} pytań</span></div>
+      <div class="score">${score}/${questions.length}</div><p>${msg}</p>
+      <div class="actions"><button class="primary" id="restart">Zagraj ponownie</button></div>`;
+    document.getElementById('restart').addEventListener('click',()=>{i=0;score=0;answered=false;render();});
+    return;
+  }
+  const q=questions[i];
+  const typ=q.type==='multi'?'Zaznacz wszystkie poprawne odpowiedzi.':'Wybierz jedną odpowiedź.';
+  app.innerHTML=`<div class="progress"><div style="width:${(i/questions.length)*100}%"></div></div>
+    <div class="meta"><span>Pytanie ${i+1} z ${questions.length}</span><span>Wynik: ${score}</span></div>
+    <div class="q">${q.q}</div><div class="hint">${typ}</div>
+    <div class="opts">${q.opts.map((o,idx)=>`<label class="opt"><input type="${q.type==='multi'?'checkbox':'radio'}" name="ans" value="${idx}"><span>${o}</span></label>`).join('')}</div>
+    <div class="actions"><button class="primary" id="check">Sprawdź</button></div>
+    <div id="fb" class="feedback"></div>`;
+  document.getElementById('check').addEventListener('click',check);
+}
+function check(){
+  if(answered) return;
+  const q=questions[i];
+  const sel=[...document.querySelectorAll('input[name="ans"]:checked')].map(x=>Number(x.value));
+  const fb=document.getElementById('fb');
+  if(sel.length===0){fb.className='feedback bad';fb.textContent='Najpierw zaznacz odpowiedź.';return;}
+  const ok=sameSet(sel,q.ans);
+  if(ok) score++;
+  answered=true;
+  document.querySelectorAll('input[name="ans"]').forEach(x=>x.disabled=true);
+  fb.className='feedback '+(ok?'ok':'bad');
+  fb.innerHTML=`<strong>${ok?'Dobrze.':'Nie tym razem.'}</strong> ${q.fb}`;
+  const actions=document.querySelector('.actions');
+  const next=document.createElement('button');
+  next.className='secondary'; next.textContent=i===questions.length-1?'Zobacz wynik':'Następne pytanie';
+  next.addEventListener('click',()=>{i++;answered=false;render();});
+  actions.appendChild(next);
+}
+render();
+</script>
+</body>
+</html>
