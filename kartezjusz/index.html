@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kartezjusz – test wiedzy</title>
+<style>
+:root{--ink:#1f2937;--muted:#526075;--accent:#4f46e5;--line:#d9dfed}*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f8fafc,#eef2ff);color:var(--ink);font:17px/1.6 system-ui,sans-serif}main{max-width:900px;margin:auto;padding:28px 18px 60px}a{color:var(--accent)}h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.1;margin:22px 0 12px}h2{font-size:1.2rem;line-height:1.5;margin:12px 0}p{margin:10px 0}.muted{color:var(--muted)}.card{background:white;border:1px solid var(--line);border-radius:20px;padding:24px;margin:20px 0;box-shadow:0 8px 24px #24324f08}.badge{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:20px;padding:4px 10px;font-size:.82rem;font-weight:650}.top{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.toolbar{position:sticky;top:0;z-index:2;background:#f8fafff5;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0}progress{width:100%;height:10px;accent-color:var(--accent)}button{cursor:pointer;border:0;border-radius:12px;padding:13px 20px;background:var(--accent);color:white;font:inherit;font-weight:650}button.secondary{background:#e9eaf9;color:#3730a3}button:disabled{opacity:.5;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f59e0b;outline-offset:3px}.option{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;margin:9px 0;cursor:pointer}.option:has(input:checked){background:#eef2ff;border-color:var(--accent)}input[type=radio],input[type=checkbox]{margin-top:7px;accent-color:var(--accent);flex-shrink:0}input[type=text],select{width:100%;padding:12px;border:1px solid #aab4c8;border-radius:10px;background:white;font:inherit;color:var(--ink)}.row{display:grid;grid-template-columns:1fr 1.3fr;gap:16px;align-items:center;margin:14px 0}fieldset{padding:0;border:0;min-width:0}legend{padding:0;width:100%}.feedback{padding:16px;border-radius:12px;margin-top:16px;background:#f1f5f9;border-left:5px solid #64748b}.correct{border-left-color:#15803d;background:#f0fdf4}.wrong{border-left-color:#b91c1c;background:#fff1f2}.unanswered{border:2px solid #c2410c}.actions{display:flex;flex-wrap:wrap;gap:12px}#result{scroll-margin-top:130px}.score{font-size:2rem;font-weight:750}small{font-size:.85rem}footer{margin-top:32px;color:var(--muted);font-size:.85rem}@media(max-width:600px){.row{grid-template-columns:1fr;gap:6px}.card{padding:18px}.toolbar{font-size:.9rem}}[hidden]{display:none!important}
+</style></head><body><main>
+<a href="../">← Wszystkie gry i testy</a>
+<header><span class="badge">Filozofia · Kartezjusz</span><h1>Od wątpienia do pewności poznania</h1><p class="muted">Sprawdź pojęcia, zrozum zależności, zastosuj wiedzę.</p></header>
+<section class="card" id="intro"><h2>Test wiedzy o filozofii Kartezjusza</h2><p>15 zadań · 3 poziomy trudności · około 10–15 minut</p><p>Wybierz jedną lub kilka odpowiedzi, oceń prawdę lub fałsz, dopasuj pojęcia i uzupełnij zdanie z podanych opcji. Wszystkie pytania są zamknięte. W dopasowaniach każdą odpowiedź wykorzystaj raz; w ocenie kilku zdań „Prawda” i „Fałsz” mogą się powtarzać.</p><p>Każde zadanie jest warte 1 punkt. Zadanie z kilkoma elementami daje punkt tylko wtedy, gdy wszystkie są poprawne. Po wybraniu odpowiedzi użyj przycisku „Sprawdź odpowiedź”, aby zobaczyć ocenę i wyjaśnienie. Zatwierdzona odpowiedź zostaje zapisana do wyniku.</p><button id="start">Rozpocznij test</button></section>
+<div id="test" hidden><div class="toolbar"><div id="counter" aria-live="polite"></div><progress id="progress" max="15" value="0" aria-label="Liczba uzupełnionych zadań"></progress></div>
+<div id="result" class="card" hidden tabindex="-1" aria-live="polite"></div>
+<form id="quiz"><div id="questions"></div><p id="notice" role="status"></p><div class="actions"><button id="submit" type="submit">Zobacz podsumowanie</button><button id="retry" type="button" class="secondary" hidden>Powtórz błędne zadania</button><button id="reset" type="button" class="secondary">Nowa próba</button></div></form></div>
+<footer>Opracowanie na podstawie: W. Tatarkiewicz, Historia filozofii, t. II, rozdział „Kartezjusz”, s. 51–61. Test służy do samodzielnej powtórki.</footer>
+</main><script>
+const BANK=[{"type":"one","level":"Łatwy","topic":"Sceptycyzm","q":"Po co Kartezjusz stosował sceptycyzm metodyczny?","options":["Aby dowieść niemożliwości wiedzy.","Aby znaleźć niepodważalny fundament wiedzy.","Aby zastąpić rozum zmysłami.","Aby wykazać fałszywość każdej myśli."],"answer":"Aby znaleźć niepodważalny fundament wiedzy.","why":"Wątpienie miało doprowadzić do pewnej wiedzy."},{"type":"tf","level":"Łatwy","topic":"Zmysły","q":"Zmysły według Kartezjusza mogą nas mylić, więc same nie stanowią pewnego fundamentu wiedzy.","options":["Prawda","Fałsz"],"answer":"Prawda","why":"Zawodność zmysłów uzasadnia metodyczne wątpienie."},{"type":"gap","level":"Łatwy","topic":"Cogito","q":"Uzupełnij: Cogito ergo sum znaczy …","options":["poznaję, więc jestem","wątpię, więc nic nie istnieje","myślę, więc jestem","widzę, więc wiem"],"answer":"myślę, więc jestem","why":"Myślenie potwierdza istnienie podmiotu myślącego."},{"type":"match","level":"Łatwy","topic":"Metoda","q":"Dopasuj cztery reguły metody do ich znaczenia.","pairs":[["Oczywistość","Przyjmowanie tego, co jasne i wyraźne."],["Analiza","Dzielenie problemu na części."],["Synteza","Przechodzenie od prostego do złożonego."],["Kontrola","Sprawdzanie kompletności rozumowania."]],"why":"Reguły porządkują rozumowanie i zapobiegają pominięciom."},{"type":"one","level":"Łatwy","topic":"Substancja","q":"Czym jest res extensa?","options":["Substancją myślącą.","Zbiorem idei wrodzonych.","Niematerialną duszą.","Substancją rozciągłą."],"answer":"Substancją rozciągłą.","why":"Rozciągłość stanowi istotę substancji materialnej."},{"type":"multi","level":"Średni","topic":"Wątpienie","q":"Które DWA twierdzenia opisują rolę wątpienia?","options":["Podważa niepewne przekonania.","Dowodzi nieistnienia świata.","Prowadzi do pewności istnienia myślącego podmiotu.","Oznacza rezygnację z prawdy."],"answers":["Podważa niepewne przekonania.","Prowadzi do pewności istnienia myślącego podmiotu."],"why":"Wątpienie prowadzi do cogito, nie do dowodu nieistnienia świata."},{"type":"one","level":"Średni","topic":"Cogito","q":"Dlaczego cogito jest dla Kartezjusza pierwszą pewną prawdą?","options":["Potwierdzono je eksperymentalnie.","Pewność istnienia ujawnia się w samym myśleniu.","Wynika z autorytetu tradycji.","Dowodzi istnienia każdego ciała."],"answer":"Pewność istnienia ujawnia się w samym myśleniu.","why":"Myślenie zakłada istnienie myślącego podmiotu."},{"type":"matrix","level":"Średni","topic":"Idee","q":"Oceń twierdzenia o poznaniu u Kartezjusza.","pairs":[["Matematyka była wzorem wiedzy pewnej.","Prawda"],["Wszystkie idee pochodzą tylko ze zmysłów.","Fałsz"],["Wyróżniał idee wrodzone, nabyte i skonstruowane.","Prawda"]],"why":"Kartezjusz doceniał rozum oraz idee wrodzone."},{"type":"one","level":"Średni","topic":"Bóg","q":"Jaką funkcję pełni Bóg w systemie Kartezjusza?","options":["Zastępuje wszelkie rozumowanie.","Gwarantuje prawdziwość wszystkich wrażeń.","Gwarantuje prawdziwość jasnego i wyraźnego poznania.","Dowodzi nieistnienia świata."],"answer":"Gwarantuje prawdziwość jasnego i wyraźnego poznania.","why":"Prawdomówny Bóg pozwala uzasadnić zaufanie do jasnego i wyraźnego poznania."},{"type":"match","level":"Średni","topic":"System","q":"Dopasuj pojęcia do ich znaczenia.","pairs":[["Cogito","Pewność własnego istnienia jako myślącego."],["Racjonalizm","Pierwszeństwo rozumu w poznaniu pewnym."],["Mechanicyzm","Wyjaśnianie materii przez ruch i oddziaływania."],["Dualizm","Odrębność substancji myślącej i rozciągłej."]],"why":"To odrębne, lecz powiązane elementy systemu."},{"type":"one","level":"Trudny","topic":"Sen","q":"Ktoś mówi: „Możliwość snu dowodzi nieistnienia świata”. Jak ocenić ten wniosek?","options":["Jest poprawny, bo sny wykluczają materię.","Jest poprawny, bo cogito wyklucza świat.","Jest błędny, bo zmysły są zawsze niezawodne.","Jest błędny: sen podważa pewność zmysłów, nie dowodzi nieistnienia świata."],"answer":"Jest błędny: sen podważa pewność zmysłów, nie dowodzi nieistnienia świata.","why":"Możliwość złudzenia nie dowodzi, że świat nie istnieje."},{"type":"multi","level":"Trudny","topic":"Dualizm","q":"Które DWA problemy rodzi dualizm kartezjański?","options":["Jak niematerialna dusza oddziałuje na materialne ciało?","Dlaczego matematyka wymaga każdego eksperymentu?","Jak współdziałają myślenie i procesy cielesne?","Dlaczego ciało nie jest rozciągłe?"],"answers":["Jak niematerialna dusza oddziałuje na materialne ciało?","Jak współdziałają myślenie i procesy cielesne?"],"why":"Odrębność substancji utrudnia wyjaśnienie ich oddziaływania."},{"type":"matrix","level":"Trudny","topic":"Konsekwencje","q":"Oceń konsekwencje filozofii Kartezjusza.","pairs":[["Cogito nie dowodzi bezpośrednio istnienia świata zewnętrznego.","Prawda"],["Mechanistyczne pojmowanie ciała utożsamia myślenie z ruchem materii.","Fałsz"],["Dualizm rodzi problem wzajemnego oddziaływania duszy i ciała.","Prawda"]],"why":"Pierwsza pewność dotyczy myślącego podmiotu, a nie mechaniki ciała."},{"type":"one","level":"Trudny","topic":"Mechanizm","q":"Robot naśladuje człowieka. Co wynika z kartezjańskiego rozróżnienia mechanizmu i myślenia?","options":["Naśladowanie zachowania nie dowodzi jeszcze istnienia myślącej duszy.","Każdy mechanizm ma duszę.","Każdy ruch jest samoświadomością.","Kartezjusz badał współczesne roboty."],"answer":"Naśladowanie zachowania nie dowodzi jeszcze istnienia myślącej duszy.","why":"To współczesny przykład rozróżnienia działania mechanizmu i myślenia."},{"type":"one","level":"Trudny","topic":"System","q":"Który ciąg najtrafniej opisuje budowanie wiedzy przez Kartezjusza?","options":["Zmysły → pewność materii → odrzucenie rozumu.","Autorytet → pewność → sceptycyzm.","Wątpienie → cogito → uzasadnianie dalszego poznania z rolą Boga.","Mechanicyzm → pewność zmysłów → idee wrodzone."],"answer":"Wątpienie → cogito → uzasadnianie dalszego poznania z rolą Boga.","why":"Punktem wyjścia jest wątpienie, następnie cogito i uzasadnianie dalszego poznania."}];
+const $=id=>document.getElementById(id);
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function answerOrders(list){
+ let positions=[],previous=-1;
+ return list.map(q=>{
+  if(!['one','gap'].includes(q.type))return q.options?(q.type==='tf'?q.options:shuffle(q.options)):null;
+  if(!positions.length){
+   positions=shuffle(q.options.map((_,i)=>i));
+   if(positions.length>1&&positions[0]===previous)[positions[0],positions[1]]=[positions[1],positions[0]];
+  }
+  const position=positions.shift();previous=position;
+  const options=shuffle(q.options.filter(o=>o!==q.answer));
+  options.splice(position,0,q.answer);
+  return options;
+ });
+}
+function norm(s){return s.trim().toLocaleLowerCase('pl').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l').replace(/[.,;:!?]/g,'').replace(/\s+/g,' ');}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function expected(q){return ['match','matrix'].includes(q.type)?q.pairs.map(p=>p[1]):q.type==='multi'?q.answers:[q.answer];}
+function correct(q,a){const e=expected(q);return a.length===e.length&&(q.type==='multi'?a.every(x=>e.includes(x)):a.every((x,i)=>x===e[i]));}
+let active=[],graded=false,failed=[],results=[];
+const TYPES={one:'Wybór jednej odpowiedzi',tf:'Prawda / fałsz',gap:'Uzupełnianie z podanych opcji',multi:'Wybór dwóch odpowiedzi',match:'Dopasowanie',matrix:'Ocena kilku zdań'};
+function render(list){
+ const optionOrders=answerOrders(list);
+ active=list;graded=false;failed=[];results=Array(list.length).fill(null);$('intro').hidden=true;$('test').hidden=false;$('result').hidden=true;$('submit').hidden=false;$('retry').hidden=true;$('notice').textContent='';
+ $('questions').innerHTML=list.map((q,i)=>{
+  let fields='';
+  if(['one','tf','gap','multi'].includes(q.type))fields=optionOrders[i].map(o=>'<label class="option"><input type="'+(q.type==='multi'?'checkbox':'radio')+'" name="q'+i+'" value="'+esc(o)+'"><span>'+esc(o)+'</span></label>').join('');
+  if(q.type==='text')fields='<label for="a'+i+'">Termin:</label><input id="a'+i+'" type="text" autocomplete="off" name="q'+i+'">';
+  if(q.type==='match'||q.type==='matrix'){
+   const options=q.type==='matrix'?['Prawda','Fałsz']:shuffle(expected(q)),labels=q.pairs.map(p=>p[0]);
+   fields=labels.map((label,j)=>'<div class="row"><label for="a'+i+'_'+j+'">'+esc(label)+'</label><select id="a'+i+'_'+j+'" name="q'+i+'_'+j+'"><option value="">Wybierz…</option>'+options.map(o=>'<option value="'+esc(o)+'">'+esc(o)+'</option>').join('')+'</select></div>').join('');
+  }
+  return '<section class="card" id="card'+i+'"><fieldset><legend><div class="top"><span class="badge">'+(i+1)+' / '+list.length+'</span><span class="badge">'+q.level+'</span><small>'+TYPES[q.type]+'</small></div><h2>'+esc(q.q)+'</h2></legend>'+fields+'</fieldset>'+('<button type="button" data-check="'+i+'" id="check'+i+'">Sprawdź odpowiedź</button>')+'<div class="feedback" role="status" aria-live="polite" id="fb'+i+'" hidden></div></section>';
+ }).join('');$('progress').max=list.length;update();
+}
+function answers(i){const q=active[i];if(q.type==='multi')return [...document.querySelectorAll('input[name="q'+i+'"]:checked')].map(el=>el.value);if(['one','tf','gap'].includes(q.type)){const el=document.querySelector('input[name="q'+i+'"]:checked');return [el?el.value:''];}return q.pairs.map((_,j)=>$('a'+i+'_'+j).value);}
+function complete(i){const a=answers(i);return active[i].type==='multi'?a.length===2:a.length>0&&a.every(x=>x.trim()!=='');}
+function update(){const n=results.filter(x=>x!==null).length;const points=results.filter(x=>x===true).length;$('counter').textContent='Sprawdzono '+n+' z '+active.length+' zadań · '+points+' pkt';$('progress').value=n;}
+function check(i){
+ if(results[i]!==null)return;
+ const card=$('card'+i),fb=$('fb'+i);
+ if(!complete(i)){fb.hidden=false;fb.className='feedback';fb.textContent='Uzupełnij całe zadanie. W pytaniu wielokrotnego wyboru zaznacz dokładnie dwie odpowiedzi.';return;}
+ const q=active[i],ok=correct(q,answers(i));results[i]=ok;card.classList.remove('unanswered');
+ const key=['match','matrix'].includes(q.type)?q.pairs.map(p=>p[0]+' → '+p[1]).join('; '):q.type==='multi'?q.answers.join('; '):q.answer;
+ fb.hidden=false;fb.className='feedback '+(ok?'correct':'wrong');
+ fb.innerHTML='<strong>'+(ok?'Dobra odpowiedź · 1 / 1 pkt':'Zła odpowiedź · 0 / 1 pkt')+'</strong><p>'+esc(q.why)+'</p>'+(!ok?'<p><strong>Poprawna odpowiedź:</strong> '+esc(key)+'</p>':'');
+ card.querySelectorAll('input,select').forEach(el=>el.disabled=true);
+ const btn=$('check'+i);if(btn)btn.hidden=true;
+ $('notice').textContent='';update();
+}
+$('start').onclick=()=>render(BANK);
+$('quiz').addEventListener('click',e=>{const btn=e.target.closest('[data-check]');if(btn)check(Number(btn.dataset.check));});
+$('quiz').addEventListener('keydown',e=>{
+ if(e.key==='Enter'&&e.target.type==='text'){e.preventDefault();const match=e.target.name.match(/^q(\d+)$/);if(match)check(Number(match[1]));}
+});
+$('quiz').onsubmit=e=>{
+ e.preventDefault();if(graded)return;
+ const missing=active.map((_,i)=>i).filter(i=>results[i]===null);
+ if(missing.length){$('notice').textContent='Odpowiedz i sprawdź wszystkie zadania. Pozostało: '+missing.length+'.';active.forEach((_,i)=>$('card'+i).classList.toggle('unanswered',missing.includes(i)));const el=$('card'+missing[0]);el.scrollIntoView({block:'center'});el.querySelector('input,select').focus();return;}
+ graded=true;const score=results.filter(x=>x===true).length,topics=new Set();
+ active.forEach((q,i)=>{if(!results[i]){failed.push(q);topics.add(q.topic);}});
+ const percent=Math.round(score/active.length*100);
+ $('result').innerHTML='<h2>Twój wynik</h2><div class="score">'+score+' / '+active.length+' pkt · '+percent+'%</div><p>'+(score===active.length?'Wszystkie zadania rozwiązane poprawnie.': 'Tematy do powtórki: '+esc([...topics].join(', '))+'.')+'</p><p class="muted">Pod każdym zadaniem znajdziesz wyjaśnienie. Wynik dotyczy tej próby.</p>';
+ $('result').hidden=false;$('submit').hidden=true;$('retry').hidden=failed.length===0;$('notice').textContent='Test zakończony.';$('result').focus();$('result').scrollIntoView({block:'start'});
+};
+$('retry').onclick=()=>{const list=failed.slice();render(list);window.scrollTo(0,0);};
+$('reset').onclick=()=>{render(BANK);window.scrollTo(0,0);};
+</script></body></html>
+
+
